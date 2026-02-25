@@ -18,4 +18,6 @@ interface IComposableMail
 	public function compose(Message $message, ?IMessageData $mailData): void;
 
 	public function send(): void;
+
+	public function preview(): string;
 }
