@@ -26,4 +26,6 @@ interface IComposableMail
 	public function preview(): string;
 
 	public function getMessage(): Message;
+
+	public function setBasePath(string $mailImagesBasePath): void;
 }

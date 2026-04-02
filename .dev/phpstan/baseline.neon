@@ -13,12 +13,6 @@ parameters:
 			path: ../../src/AbstractMail.php
 
 		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
-			count: 1
-			path: ../../src/AbstractMail.php
-
-		-
 			message: '#^Method Ublaboo\\Mailing\\AbstractMail\:\:__construct\(\) has parameter \$mailAddresses with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
