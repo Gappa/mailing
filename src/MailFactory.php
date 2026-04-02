@@ -16,6 +16,9 @@ use Nette\Mail\IMailer;
 use Nette\Mail\Message;
 use Ublaboo\Mailing\Exception\MailingMailCreationException;
 
+/**
+ * @template T of AbstractMail
+ */
 class MailFactory
 {
 
@@ -79,6 +82,11 @@ class MailFactory
 	}
 
 
+	/**
+	 * @param class-string<T> $type
+	 * @return IComposableMail<T>
+	 * @throws MailingMailCreationException
+	 */
 	public function createByType(string $type, ?IMessageData $mailData): IComposableMail
 	{
 		$this->message = new Message;

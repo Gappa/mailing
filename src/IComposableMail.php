@@ -12,6 +12,10 @@ namespace Ublaboo\Mailing;
 
 use Nette\Mail\Message;
 
+
+/**
+ * @template T of object
+ */
 interface IComposableMail
 {
 
@@ -20,4 +24,6 @@ interface IComposableMail
 	public function send(): void;
 
 	public function preview(): string;
+
+	public function getMessage(): Message;
 }

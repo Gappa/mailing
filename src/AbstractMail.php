@@ -17,6 +17,7 @@ use Nette\Application\UI\ITemplateFactory;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Mail\IMailer;
 use Nette\Mail\Message;
+use Nette\Utils\Arrays;
 use Ublaboo\Mailing\DI\MailingExtension;
 
 abstract class AbstractMail
@@ -67,6 +68,11 @@ abstract class AbstractMail
 	 */
 	private $mailData;
 
+	/**
+	 * @var array<callable(self): void>
+	 */
+	private $onBeforeSend = [];
+
 
 	public function __construct(
 		string $config,
@@ -102,7 +108,7 @@ abstract class AbstractMail
 		$this->mailImagesBasePath = $mailImagesBasePath;
 	}
 
-	
+
 	/**
 	 * Render latte template to string and send (and/or log) mail
 	 */
@@ -111,6 +117,8 @@ abstract class AbstractMail
 		$templateName = $this->prepareTemplate();
 
 		$this->message->setHtmlBody((string) $this->template, $this->mailImagesBasePath);
+
+		Arrays::invoke($this->onBeforeSend, $this);
 
 		/**
 		 * In case mail sending in on, send message
@@ -128,13 +136,6 @@ abstract class AbstractMail
 	}
 
 
-	public function preview(): string
-	{
-		$templateName = $this->prepareTemplate();
-		return (string) $this->template;
-	}
-	
-	
 	/**
 	 * @return string
 	 * @throws \ReflectionException
@@ -145,7 +146,7 @@ abstract class AbstractMail
 		 * Template variables..
 		 */
 		$this->template->mailData = $this->mailData;
-		
+
 		/**
 		 * Stick to convention that Email:
 		 * 		/FooMail.php
@@ -155,13 +156,13 @@ abstract class AbstractMail
 		 */
 		$mailClassReflection = new \ReflectionClass($this);
 		$templateName = $mailClassReflection->getShortName();
-		
+
 		$this->template->setFile(sprintf(
 			'%s/templates/%s.latte',
 			dirname($mailClassReflection->getFilename()),
 			$templateName
 		));
-		
+
 		/**
 		 * Set body/html body
 		 */
@@ -170,7 +171,20 @@ abstract class AbstractMail
 		} else {
 			$this->template->_control = $this->linkGenerator;
 		}
-		
+
 		return $templateName;
+	}
+
+
+	public function preview(): string
+	{
+		$templateName = $this->prepareTemplate();
+		return (string) $this->template;
+	}
+
+
+	public function getMessage(): Message
+	{
+		return $this->message;
 	}
 }
