@@ -1,0 +1,8 @@
+parameters:
+	level: 9
+	paths:
+		- %currentWorkingDirectory%/src
+		- %currentWorkingDirectory%/tests
+
+includes:
+	- baseline.neon

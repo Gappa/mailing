@@ -1,3 +1,28 @@
-/vendor
-/composer.lock
-/.idea
+# Common ignores
+.svn/*
+.git/*
+.hg/*
+.idea/*
+
+*.cache
+*.bak
+*.orig
+*.swp
+*.sow
+*.vi
+*.un~
+.hgtags
+.hgignore
+*~
+.DS_Store
+thumbs.db
+.run.local
+
+# Files
+composer.lock
+.phpunit.result.cache
+
+# Dirs
+vendor/
+temp/
+.idea/
