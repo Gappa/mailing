@@ -126,6 +126,13 @@ abstract class AbstractMail
 			$this->logger->log($templateName, $this->message);
 		}
 	}
+
+
+	public function preview(): string
+	{
+		$templateName = $this->prepareTemplate();
+		return (string) $this->template;
+	}
 	
 	
 	/**
