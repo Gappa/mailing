@@ -11,71 +11,32 @@ declare(strict_types=1);
 namespace Ublaboo\Mailing;
 
 use Nette\Application\LinkGenerator;
-use Nette\Application\UI\ITemplateFactory;
-use Nette\Mail\IMailer;
+use Nette\Bridges\ApplicationLatte\TemplateFactory;
+use Nette\Mail\Mailer;
 use Nette\Mail\Message;
 use Ublaboo\Mailing\Exception\MailingMailCreationException;
 
 class MailFactory
 {
-
-	/**
-	 * @var string
-	 */
-	private $config;
-
-	/**
-	 * @var IMailer
-	 */
-	private $mailer;
-
-	/**
-	 * @var Message
-	 */
-	private $message;
-
-	/**
-	 * @var array
-	 */
-	private $mails;
-
-	/**
-	 * @var ITemplateFactory
-	 */
-	private $templateFactory;
-
-	/**
-	 * @var LinkGenerator
-	 */
-	private $linkGenerator;
-
-	/**
-	 * @var ILogger
-	 */
-	private $logger;
-
-	/**
-	 * @var string
-	 */
-	private $mailImagesBasePath;
+	private string $config;
+	private Message $message;
+	private array $mails;
+	private string $mailImagesBasePath;
 
 
 	public function __construct(
 		string $config,
 		string $mailImagesBasePath,
 		array $mails,
-		IMailer $mailer,
-		LinkGenerator $linkGenerator,
-		ITemplateFactory $templateFactory,
-		ILogger $logger
+
+		private readonly Mailer $mailer,
+		private readonly LinkGenerator $linkGenerator,
+		private readonly TemplateFactory $templateFactory,
+		private readonly ILogger $logger
 	) {
 		$this->config = $config;
 		$this->mailImagesBasePath = $mailImagesBasePath;
-		$this->mailer = $mailer;
 		$this->mails = $mails;
-		$this->linkGenerator = $linkGenerator;
-		$this->templateFactory = $templateFactory;
-		$this->logger = $logger;
 	}
 
 

@@ -10,77 +10,40 @@ declare(strict_types=1);
 
 namespace Ublaboo\Mailing;
 
-use Latte\Engine;
 use Nette\Application\LinkGenerator;
-use Nette\Application\UI\ITemplate;
-use Nette\Application\UI\ITemplateFactory;
 use Nette\Bridges\ApplicationLatte\Template;
-use Nette\Mail\IMailer;
+use Nette\Bridges\ApplicationLatte\TemplateFactory;
+use Nette\Mail\Mailer;
 use Nette\Mail\Message;
 use Nette\Utils\Arrays;
+use ReflectionException;
 use Ublaboo\Mailing\DI\MailingExtension;
 
 abstract class AbstractMail
 {
-
-	/**
-	 * @var array
-	 */
-	protected $mailAddresses;
-
-	/**
-	 * @var IMailer
-	 */
-	protected $mailer;
-
-	/**
-	 * @var Message
-	 */
-	protected $message;
-
-	/**
-	 * @var LinkGenerator
-	 */
-	protected $linkGenerator;
-
-	/**
-	 * @var ILogger
-	 */
-	protected $logger;
-
-	/**
-	 * @var ITemplate
-	 */
-	protected $template;
-
-	/**
-	 * @var string
-	 */
-	protected $mailImagesBasePath;
-
-	/**
-	 * @var string
-	 */
-	private $config;
-
-	/**
-	 * @var IMessageData|null
-	 */
-	private $mailData;
+	protected array $mailAddresses;
+	protected Mailer $mailer;
+	protected Message $message;
+	protected LinkGenerator $linkGenerator;
+	protected ILogger $logger;
+	protected Template $template;
+	protected string $mailImagesBasePath;
+	private string $config;
+	private ?IMessageData $mailData;
 
 	/**
 	 * @var array<callable(self): void>
 	 */
-	private $onBeforeSend = [];
+	private array $onBeforeSend = [];
 
 
 	public function __construct(
 		string $config,
 		array $mailAddresses,
-		IMailer $mailer,
+		Mailer $mailer,
 		Message $message,
 		LinkGenerator $linkGenerator,
-		ITemplateFactory $templateFactory,
+		TemplateFactory $templateFactory,
 		ILogger $logger,
 		?IMessageData $mailData
 	) {
@@ -138,7 +101,7 @@ abstract class AbstractMail
 
 	/**
 	 * @return string
-	 * @throws \ReflectionException
+	 * @throws ReflectionException
 	 */
 	protected function prepareTemplate(): string
 	{
@@ -174,7 +137,7 @@ abstract class AbstractMail
 
 	public function preview(): string
 	{
-		$templateName = $this->prepareTemplate();
+		$this->prepareTemplate();
 		return (string) $this->template;
 	}
 

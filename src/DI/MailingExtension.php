@@ -17,15 +17,11 @@ use Ublaboo\Mailing\MailLogger;
 
 class MailingExtension extends CompilerExtension
 {
+	public const string CONFIG_LOG  = 'log';
+	public const string CONFIG_SEND = 'send';
+	public const string CONFIG_BOTH = 'both';
 
-	public const CONFIG_LOG  = 'log';
-	public const CONFIG_SEND = 'send';
-	public const CONFIG_BOTH = 'both';
-
-	/**
-	 * @var array
-	 */
-	private $defaults = [
+	private array $defaults = [
 		'do' => self::CONFIG_BOTH,
 		'logDirectory' => '%appDir%/../log/mails',
 		'mailImagesBasePath' => '%wwwDir%',
@@ -40,11 +36,11 @@ class MailingExtension extends CompilerExtension
 		$builder = $this->getContainerBuilder();
 
 		$builder->addDefinition($this->prefix('mailLogger'))
-			->setClass(MailLogger::class)
+			->setType(MailLogger::class)
 			->setArguments([$config['logDirectory']]);
 
 		$builder->addDefinition($this->prefix('mailFactory'))
-			->setClass(MailFactory::class)
+			->setType(MailFactory::class)
 			->setArguments([$config['do'], $config['mailImagesBasePath'], $config['mails']]);
 	}
 

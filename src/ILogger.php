@@ -18,5 +18,5 @@ interface ILogger
 	/**
 	 * Log mail messages to eml file
 	 */
-	public function log($type, Message $mail): void;
+	public function log(string $type, Message $mail): void;
 }

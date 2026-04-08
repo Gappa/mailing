@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace Ublaboo\Mailing\Tests\Unit;
 
+use Latte\Engine;
 use Mockery;
+use Nette\Application\LinkGenerator;
+use Nette\Bridges\ApplicationLatte\Template;
+use Nette\Bridges\ApplicationLatte\TemplateFactory;
+use Nette\Mail\Mailer;
 use Tester\Assert;
 use Tester\Environment;
 use Tester\TestCase;
 use Ublaboo\Mailing\DI\MailingExtension;
-use Ublaboo\Mailing\Exception\MailingException;
+use Ublaboo\Mailing\ILogger;
 use Ublaboo\Mailing\MailFactory;
-use Ublaboo\Mailing\Tests\Unit\TestingMailData;
 
 require __DIR__ . '/../bootstrap.php';
 Environment::bypassFinals();
@@ -24,12 +28,12 @@ final class MailTest extends TestCase
 		$mailImagesBasePath = 'www';
 		$mails = ['recipient' => 'mail@ma.il'];
 
-		$mailer          = Mockery::mock('Nette\Mail\IMailer');
-		$linkGenerator   = Mockery::mock('Nette\Application\LinkGenerator');
-		$templateFactory = Mockery::mock('Nette\Application\UI\ITemplateFactory');
-		$logger          = Mockery::mock('Ublaboo\Mailing\ILogger');
-		$template        = Mockery::mock('Nette\Application\UI\ITemplate');
-		$latte           = Mockery::mock('Latte\Engine');
+		$mailer          = Mockery::mock(Mailer::class);
+		$linkGenerator   = Mockery::mock(LinkGenerator::class);
+		$templateFactory = Mockery::mock(TemplateFactory::class);
+		$logger          = Mockery::mock(ILogger::class);
+		$template        = Mockery::mock(Template::class);
+		$latte           = Mockery::mock(Engine::class);
 
 		$templateFactory->shouldReceive('createTemplate')->andReturn($template);
 
@@ -64,9 +68,9 @@ final class MailTest extends TestCase
 	}
 
 
-	public function testDoBoth()
+	public function testDoBoth(): void
 	{
-		list($mail, $template, $logger, $mailer) = $this->createMail(
+		[$mail, $template, $logger, $mailer] = $this->createMail(
 			MailingExtension::CONFIG_BOTH
 		);
 
@@ -79,9 +83,9 @@ final class MailTest extends TestCase
 	}
 
 
-	public function testDoSend()
+	public function testDoSend(): void
 	{
-		list($mail, $template, $logger, $mailer) = $this->createMail(
+		[$mail, $template, $logger, $mailer] = $this->createMail(
 			MailingExtension::CONFIG_SEND
 		);
 
@@ -94,9 +98,9 @@ final class MailTest extends TestCase
 	}
 
 
-	public function testDoLog()
+	public function testDoLog(): void
 	{
-		list($mail, $template, $logger, $mailer) = $this->createMail(
+		[$mail, $template, $logger, $mailer] = $this->createMail(
 			MailingExtension::CONFIG_LOG
 		);
 
@@ -109,9 +113,9 @@ final class MailTest extends TestCase
 	}
 
 
-	public function testSetBody()
+	public function testSetBody(): void
 	{
-		list($mail, $template, $logger, $mailer) = $this->createMail(
+		[$mail, $template, $logger, $mailer] = $this->createMail(
 			MailingExtension::CONFIG_BOTH
 		);
 
@@ -122,7 +126,7 @@ final class MailTest extends TestCase
 	}
 
 
-	private function getTmpTemplateFile($name)
+	private function getTmpTemplateFile(string $name): string
 	{
 		$name = lcfirst(preg_replace_callback('/(?<=.)([A-Z])/', function ($m) {
 			return '_' . strtolower($m[1]);
@@ -139,7 +143,7 @@ final class MailTest extends TestCase
 	}
 
 
-	private function destroyTmpTemplateFile($name)
+	private function destroyTmpTemplateFile(string $name): void
 	{
 		if (file_exists(__DIR__ . "/../templates/$name.latte")) {
 			unlink(__DIR__ . "/../templates/$name.latte");
