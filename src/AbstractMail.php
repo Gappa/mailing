@@ -166,11 +166,7 @@ abstract class AbstractMail
 		/**
 		 * Set body/html body
 		 */
-		if (version_compare(Engine::VERSION, '2.4.0', '>=')) {
-			$this->template->getLatte()->addProvider('uiControl', $this->linkGenerator);
-		} else {
-			$this->template->_control = $this->linkGenerator;
-		}
+		$this->template->getLatte()->addProvider('uiControl', $this->linkGenerator);
 
 		return $templateName;
 	}
