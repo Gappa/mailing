@@ -22,14 +22,10 @@ use Ublaboo\Mailing\DI\MailingExtension;
 abstract class AbstractMail
 {
 	protected array $mailAddresses;
-	protected Mailer $mailer;
-	protected Message $message;
-	protected LinkGenerator $linkGenerator;
-	protected ILogger $logger;
+
 	protected Template $template;
 	protected string $mailImagesBasePath;
 	private string $config;
-	private ?IMessageData $mailData;
 
 	/**
 	 * @var array<callable(self): void>
@@ -40,21 +36,15 @@ abstract class AbstractMail
 	public function __construct(
 		string $config,
 		array $mailAddresses,
-		Mailer $mailer,
-		Message $message,
-		LinkGenerator $linkGenerator,
+		protected Mailer $mailer,
+		protected Message $message,
+		protected LinkGenerator $linkGenerator,
 		TemplateFactory $templateFactory,
-		ILogger $logger,
-		?IMessageData $mailData
+		protected ILogger $logger,
+		private readonly ?IMessageData $mailData,
 	) {
 		$this->config = $config;
 		$this->mailAddresses = $mailAddresses;
-		$this->mailer = $mailer;
-		$this->message = $message;
-		$this->linkGenerator = $linkGenerator;
-		$this->logger = $logger;
-		$this->mailData = $mailData;
-
 		$this->template = $templateFactory->createTemplate();
 
 		/**
